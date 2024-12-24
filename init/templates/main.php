@@ -33,7 +33,7 @@
                             <span class="lot__cost"><?=price_format($value['price']); //текущая цена с форматированием?></span>
                         </div>
                         <?php $restTime=rest_time($value['dateFin']);?>
-                        <div class="lot__timer timer">
+                        <div class="lot__timer timer <?=($restTime[0]<1)&&($restTime[1]<1)?"timer--finishing":"";?>">
                             <?="$restTime[0]"."д ". "$restTime[1]:$restTime[2]"?>
                         </div>
                     </div>
