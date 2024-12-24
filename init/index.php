@@ -1,7 +1,15 @@
 <?php
 $is_auth = rand(0, 1);
-
 $user_name = ''; // укажите здесь ваше имя
+//массив категорий
+$categories = [
+    'boards' => 'Доски и лыжи',
+    'attachment' => 'Крепления',
+    'boots' => 'Ботинки',
+    'clothing' => 'Одежда',
+    'tools' => 'Инструменты',
+    'other' => 'Разное'
+];
 ?>
 <!DOCTYPE html>
 <html lang="ru">
