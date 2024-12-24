@@ -1,4 +1,5 @@
 <?php
+require 'functions.php';
 $is_auth = rand(0, 1);
 $user_name = ''; // укажите здесь ваше имя
 //массив категорий
@@ -126,8 +127,8 @@ $lots = [
                     </h3>
                     <div class="lot__state">
                         <div class="lot__rate">
-                            <span class="lot__amount"><?=$value['price']; //стартовая цена?> </span>
-                            <span class="lot__cost"><?=$value['price']; //текцщая цена?><b class="rub">р</b></span>
+                            <span class="lot__amount"><?=price_format($value['price']); //стартовая цена c ajhvfnbhjdfybtv?> </span>
+                            <span class="lot__cost"><?=price_format($value['price']); //текущая цена с форматированием?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
