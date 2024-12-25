@@ -32,7 +32,7 @@ CREATE TABLE lots
 	finsh_date DATETIME NOT NULL,
 	bet_stage INT NOT NULL,
 	creator_id INT NOT NULL,
-	winner_id INT NOT NULL,
+	winner_id INT,
 	category_id INT NOT NULL,
 	FOREIGN KEY (creator_id) REFERENCES users (user_id),
 	FOREIGN KEY (winner_id) REFERENCES users (user_id),
