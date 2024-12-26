@@ -17,22 +17,22 @@
         </div>
         <ul class="lots__list">
             <!--заполните этот список из массива с товарами-->
-            <?php foreach ($lots as $key => $value): ?>
+            <?php foreach ($lots as $lot): ?>
             <li class="lots__item lot">
                 <div class="lot__image">
-                    <img src="<?=$value['url'];?>" width="350" height="260" alt="<?=$value['lot'];?>">
+                    <img src="<?=$lot['image'];?>" width="350" height="260" alt="<?=$lot['name'];?>">
                 </div>
                 <div class="lot__info">
-                    <span class="lot__category"><?=$value['category'];?> </span>
+                    <span class="lot__category"><?=$lot['category'];?> </span>
                     <h3 class="lot__title">
-                        <a class="text-link" href="pages/lot.html"><?=$value['lot'];?></a>
+                        <a class="text-link" href="pages/lot.html"><?=$lot['name'];?></a>
                     </h3>
                     <div class="lot__state">
                         <div class="lot__rate">
-                            <span class="lot__amount"><?=price_format($value['price']); //стартовая цена c ajhvfnbhjdfybtv?> </span>
-                            <span class="lot__cost"><?=price_format($value['price']); //текущая цена с форматированием?></span>
+                            <span class="lot__amount"><?=price_format($lot['start_price']); //стартовая цена c форматированием?> </span>
+                            <span class="lot__cost"><?=price_format($lot['fin_price']); //текущая цена с форматированием?></span>
                         </div>
-                        <?php $restTime=rest_time($value['dateFin']);?>
+                        <?php $restTime=rest_time($lot['finish_date']);?>
                         <div class="lot__timer timer <?=($restTime[0]<1)&&($restTime[1]<1)?"timer--finishing":"";?>">
                             <?="$restTime[0]"."д ". "$restTime[1]:$restTime[2]"?>
                         </div>

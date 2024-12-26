@@ -6,7 +6,7 @@ FROM categories;
 --получить самые новые, открытые лоты. 
 --Каждый лот должен включать 
 --название, стартовую цену, ссылку на изображение, цену, название категории;
-SELECT l.name, l.start_price, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category
+SELECT l.id, l.name, l.start_price, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finish_date
 FROM lots l
 JOIN categories c 
 ON l.category_id = c.category_id
