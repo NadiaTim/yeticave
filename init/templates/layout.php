@@ -51,10 +51,9 @@
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <!--заполните этот список из массива категорий-->
-            <?php foreach ($categories as $key => $value): ?>
+            <?php foreach ($categories as $category): ?>
             <li class="nav__item">
-                <a href="pages/<?=$key;?>.html"><?=$value;?></a>
+                <a href="pages/<?=$category['code'];?>.html"><?=$category['name'];?></a>
             </li>
         <?php endforeach; ?>
         </ul>

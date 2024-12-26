@@ -4,12 +4,16 @@ require 'helpers.php';
 require 'data.php';
 
 //подключение к БД
-$con = mysql_connect("MySQL-5.7","root","","yeticave");
+$con = mysqli_connect("MySQL-5.7","root","","yeticave");
 if ($con == false) {
     print("Ошибка подключения: ". mysqli_connect_error());
 }
 //установка кодировки
 mysqli_set_charset($con, "utf8");
+//получение массива категорий
+$sql = "SELECT name, code FROM categories;";
+$result = mysqli_query($con, $sql);
+$categories = mysqli_fetch_all($result, MYSQLI_ASSOC);//полученные категории из БД
 
 
 
