@@ -3,6 +3,16 @@ require 'functions.php';
 require 'helpers.php';
 require 'data.php';
 
+//подключение к БД
+$con = mysql_connect("MySQL-5.7","root","","yeticave");
+if ($con == false) {
+    print("Ошибка подключения: ". mysqli_connect_error());
+}
+//установка кодировки
+mysqli_set_charset($con, "utf8");
+
+
+
 $layout = include_template('layout.php', $data = [
         'title'      => 'Главная страница',
         'categories' => $categories,
