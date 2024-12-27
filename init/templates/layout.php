@@ -49,11 +49,7 @@
 </div>
 
 <footer class="main-footer">
-    <nav class="nav">
-        <ul class="nav__list container">
             <?=$categories_temp;?>
-        </ul>
-    </nav>
     <div class="main-footer__bottom container">
         <div class="main-footer__copyright">
             <p>© 2019, YetiCave</p>

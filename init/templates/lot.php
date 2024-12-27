@@ -1,10 +1,5 @@
 <main>
-    <nav class="nav">
-      
-      <ul class="nav__list container">
       <?=$categories_temp;?>
-      </ul>
-    </nav>
     <section class="lot-item container">
       <h2><?=$lot['name']; ?></h2>
       <div class="lot-item__content">
