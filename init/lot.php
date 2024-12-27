@@ -15,8 +15,10 @@ $get_lot_id = filter_input(INPUT_GET, 'lot_id');
 
 //получение лота
 if (!$con) {
-    print("Ошибка подключения: ". mysqli_connect_error());
-    $error = mysqli_connect_error();
+    //вывод ошибки подключения
+    //$error = mysqli_connect_error();
+    header("Location: https://yeticave.local/error.php");
+    die();
 } else {
     $sql = "SELECT l.lot_id, l.name name, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date, l.discription, l.bet_stage
 			FROM (SELECT * from lots WHERE lot_id = '$get_lot_id;') l
@@ -27,11 +29,13 @@ if (!$con) {
 				GROUP BY lot_id) p 
 			ON l.lot_id = p.lot_id;";
     $result = mysqli_query($con, $sql);
-    if ($result) {
+    if (mysqli_num_rows($result)>=1) {
         $lot = mysqli_fetch_assoc($result);
     } else {
-        $error = mysqli_error($con);
-        print("Ошибка запроса: ".$error);
+        //вывод ошибки запроса
+        //$error = mysqli_error($con);
+        header("Location: https://yeticave.local/error.php");
+        die();
     }
 }
 

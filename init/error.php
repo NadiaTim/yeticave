@@ -16,7 +16,6 @@ $categories_temp = include_template('categories.php', [
 $error_temp = include_template('error.php', [
 	'categories_temp' => $categories_temp]);
 
-
 //вывод отображения страницы
 $layout = include_template('layout.php', $data = [
         'title'      => "Ошибка 404",
