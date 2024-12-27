@@ -36,15 +36,19 @@ if (!$con) {
     }
 }
 
+$categories_temp = include_template('categories.php', [
+            'categories' => $categories
+        ]);
+
 $lot_temp = include_template('lot.php', [
-            'categories' => $categories,
+            'categories_temp' => $categories_temp,
             'lot'       => $lot
         ]);
 
 //вывод отображения страницы
 $layout = include_template('layout.php', $data = [
         'title'      => $lot["name"],
-        'categories' => $categories,
+        'categories_temp' => $categories_temp,
         'is_auth'    => $is_auth,
         'main'       => $lot_temp
  ]);

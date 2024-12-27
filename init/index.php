@@ -35,10 +35,14 @@ if (!$con) {
 
 
 //вывод отображения страницы
+$categories_temp = include_template('categories.php', [
+            'categories' => $categories
+        ]);
+
 
 $layout = include_template('layout.php', $data = [
         'title'      => 'Главная страница',
-        'categories' => $categories,
+        'categories_temp' => $categories_temp,
         'is_auth'    =>$is_auth,
         'main'       => include_template('main.php', [
             'categories' => $categories,
