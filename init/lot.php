@@ -11,8 +11,7 @@ require 'connect.php';
 
 
 //получение значения текущего лота из параметра запроса
-//$get_lot_id = filter_input(INPUT_GET, 'lot_id', FILTER_SANITIZE_STRONG);
-$get_lot_id = 1;
+$get_lot_id = filter_input(INPUT_GET, 'lot_id');
 
 //получение лота
 if (!$con) {
