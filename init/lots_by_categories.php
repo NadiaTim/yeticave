@@ -14,10 +14,21 @@ require 'connect.php';
 //получение значения кода текущей категории из параметра запроса
 $get_category = filter_input(INPUT_GET, 'category_code');
 
+$exist = 0;//счетчик существования
+foreach ($categories as $category) {
+    if ($category['code']==$get_category) {
+        $category_title = $category['name'];
+        $exist = $exist + 1;
+    }
+}
+if ($exist<>1) {
+    header("Location: https://yeticave.local/error.php");
+    die();
+}
 
 //получение массива лотов
 if (!$con) {
-    //$error = mysqli_connect_error();
+    $error = mysqli_connect_error();
     header("Location: https://yeticave.local/error.php");
     die();
 } else {
@@ -32,12 +43,10 @@ if (!$con) {
             WHERE l.finsh_date>now()
             ORDER BY l.create_date DESC;";
     $result = mysqli_query($con, $sql);
-    if ($result) {
+    if (mysqli_num_rows($result)>=1) {
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
-        //$error = mysqli_error($con);
-        header("Location: https://yeticave.local/error.php");
-    	die();
+        $lots = [];  
     }
 }
 
@@ -49,12 +58,13 @@ $categories_temp = include_template('categories.php', [
 
 $lots_temp = include_template('lots_by_categories.php', [
 	'categories_temp' => $categories_temp,
-	'lots' => $lots
+	'lots' => $lots,
+    'category_title' => $category_title
 ]);
 
 
 $layout = include_template('layout.php', $data = [
-    'title'      => $lots[0]['category'],
+    'title'      => $category_title,
     'categories_temp' => $categories_temp,
     'is_auth'    =>$is_auth,
     'main'       => $lots_temp

@@ -1,8 +1,12 @@
   <main>
-  	<?=$categories_temp;?>
+   <?=$categories_temp;?>
     <div class="container">
       <section class="lots">
-        <h2>Все лоты в категории <span><?=$lots[0]['category']; ?></span></h2>
+        <h2>Все лоты в категории <span><?=$category_title; ?></span></h2>
+        <?php if (!$lots) : ?>
+          <h3>Лоты не найдены</h3>
+          <p>В категории <?=$category_title; ?> отсутствуют активные лоты.</p>
+        <?php else: ?>  
         <ul class="lots__list">
         <?php foreach ($lots as $lot): ?>	
           <li class="lots__item lot">
@@ -26,6 +30,7 @@
           </li>
         <?php endforeach; ?>
         </ul>
+      
       </section>
       <ul class="pagination-list">
         <li class="pagination-item pagination-item-prev"><a>Назад</a></li>
@@ -35,5 +40,6 @@
         <li class="pagination-item"><a href="#">4</a></li>
         <li class="pagination-item pagination-item-next"><a href="#">Вперед</a></li>
       </ul>
+      <?php endif; ?>
     </div>
   </main>
