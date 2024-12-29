@@ -7,11 +7,6 @@ require 'connect.php';
 //содержит подключение к БД
 
 
-//шаблон для отображения категорий
-$categories_temp = include_template('categories.php', [
-            'categories' => $categories
-        ]);
-
 //шаблон для отображения основного содержимого
 $error_temp = include_template('error.php', [
 	'categories_temp' => $categories_temp]);

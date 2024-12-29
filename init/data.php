@@ -19,3 +19,8 @@ if (!$con) {
         print("Ошибка запроса: ".$error);
     }
 }
+
+//вызов шаблона блока категорий
+$categories_temp = include_template('categories.php', [
+            'categories' => $categories
+        ]);

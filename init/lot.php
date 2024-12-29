@@ -39,10 +39,6 @@ if (!$con) {
     }
 }
 
-$categories_temp = include_template('categories.php', [
-            'categories' => $categories
-        ]);
-
 $lot_temp = include_template('lot.php', [
             'categories_temp' => $categories_temp,
             'lot'       => $lot

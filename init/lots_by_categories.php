@@ -52,9 +52,6 @@ if (!$con) {
 
 
 //вывод отображения страницы
-$categories_temp = include_template('categories.php', [
-    'categories' => $categories
-]);
 
 $lots_temp = include_template('lots_by_categories.php', [
 	'categories_temp' => $categories_temp,
