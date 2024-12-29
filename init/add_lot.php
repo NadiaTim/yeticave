@@ -60,7 +60,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$errors = array_filter($errors);
 
 	//проверка файла
+	if (isset($_FILES['lot-img'])) {
+		//временное имя
+		$tmp_name = $_FILES['lot-img']['tmp_name'];
+		$new_lot['img_name'] = $_FILES['lot-img']['name'];
+		//$filename = uniqid().'.gif';
 
+		//размер файла
+		$filesize = $_FILES['lot-img']['size'];
+
+		//опредляем MIME-тип файла
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$file_type = finfo_open($finfo,$tmp_name);
+		$allow_types = ['image/jpg', 'image/jpeg', 'image/png'];
+
+		if (!in_array($file_type, $allow_types)) {
+			$errors['file'] = "Загрузите картинку в формате jpg, jpeg или png";
+		}  
+	} else {
+		$errors['file'] = 'Вы не загрузили файл';
+	}
 
 
 	//проверяем наличе ошибок
@@ -72,6 +91,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			'errors'          => $errors
 		]);
 	} else {
+
+		//переносим файл из временного хранилища
+		//Назначаем уникальное имя
+		$filename = uniqid().'.gif';
+		//присваиваем новый url
+		$new_lot['url'] = '/uploads/' . $file_name;
+		move_uploaded_file($tmp_name,$new_lot['url']);
+
+
 		//формирование запроса на вставку и если запрос удачный, вставка и переход на созданный лот
 
 		if ($res) {
