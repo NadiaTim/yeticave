@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	//получаем в массив нового лота поля из отправленной формы
 	//при отсутствии поля зачение переменной NULL
-	$new_lot = filter_input_arry(INTUT_POST, [
+	$new_lot = filter_input_array(INPUT_POST, [
 		'lot-name'=>FILTER_DEFAULT,
 		'category'=>FILTER_DEFAULT,
 		'message' =>FILTER_DEFAULT,
@@ -58,20 +58,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	//очищаем массив ошибок от пустых значений
 	$errors = array_filter($errors);
-
 	//проверка файла
-	if (isset($_FILES['lot-img'])) {
+	if ($_FILES['lot-img']['size']>0) {
 		//временное имя
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
 		$tmp_name = $_FILES['lot-img']['tmp_name'];
 		$new_lot['img_name'] = $_FILES['lot-img']['name'];
-		//$filename = uniqid().'.gif';
 
 		//размер файла
 		$filesize = $_FILES['lot-img']['size'];
 
 		//опредляем MIME-тип файла
-		$finfo = finfo_open(FILEINFO_MIME_TYPE);
-		$file_type = finfo_open($finfo,$tmp_name);
+		$file_type = finfo_file($finfo, $tmp_name);
 		$allow_types = ['image/jpg', 'image/jpeg', 'image/png'];
 
 		if (!in_array($file_type, $allow_types)) {
@@ -84,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	//проверяем наличе ошибок
 	if (count($errors)) {
-		$add_lot_ = include_template ('add_lot.php', [
+		$add_lot = include_template ('add_lot.php', [
 			'categories_temp' => $categories_temp,
 			'categories'      => $categories,
 			'new_lot'         => $new_lot,
@@ -94,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		//переносим файл из временного хранилища
 		//Назначаем уникальное имя
-		$filename = uniqid().'.gif';
+		$filename = uniqid().'.jpg';
 		//присваиваем новый url
 		$new_lot['url'] = '/uploads/' . $file_name;
 		move_uploaded_file($tmp_name,$new_lot['url']);

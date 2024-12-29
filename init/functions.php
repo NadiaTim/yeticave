@@ -94,7 +94,7 @@ function input_integer($value){
  * 
  * */
 function input_date($date){
-    $format_to_check_2 = 'Y-m-d H:i';
+    $format_to_check = 'Y-m-d H:i';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
     if ($dateTimeObj !== false && array_sum(date_get_last_errors()) === 0){
         $dateFin = strtotime($date);
