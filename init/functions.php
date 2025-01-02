@@ -80,7 +80,7 @@ function input_integer($value){
     if (!is_numeric($value)) {
         return "Данные должны быть в числовом формате";  
     } else {
-        if (!is_int($value)) {
+        if (($value%1)!=0) {
             return "Данные должны быть целым числом";
         }
     }  
@@ -94,13 +94,13 @@ function input_integer($value){
  * 
  * */
 function input_date($date){
-    $format_to_check = 'Y-m-d H:i';
+    $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
     if ($dateTimeObj !== false && array_sum(date_get_last_errors()) === 0){
         $dateFin = strtotime($date);
         $dateNow = strtotime("now");
         $diff_d    = ($dateFin - $dateNow)/3600;
-        if ($diff_d <=1) {
+        if ($diff_d >=1) {
             return;
         }
         return "Дата должна быть больше текущей даты, хотя бы на один день";
