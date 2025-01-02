@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		//временное имя
 		$finfo = finfo_open(FILEINFO_MIME_TYPE);
 		$tmp_name = $_FILES['lot-img']['tmp_name'];
-		$new_lot['img_name'] = $_FILES['lot-img']['name'];
+		//$new_lot['img_name'] = $_FILES['lot-img']['name'];
 
 		//размер файла
 		$filesize = $_FILES['lot-img']['size'];
@@ -74,7 +74,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		if (!in_array($file_type, $allow_types)) {
 			$errors['file'] = "Загрузите картинку в формате jpg, jpeg или png";
-		}  
+		} else {
+			$type = mb_substr(strstr($file_type, '/'),1);
+			$file_name = uniqid('img').'.'.$type;
+			//присваиваем новый url
+			//$tmp_name = $_FILES['lot-img']['tmp_name'];
+			//$name = basename($_FILES["lot-img"]["name"]);
+        	//move_uploaded_file($tmp_name, "uploads/$name");
+			//$new_lot['url'] = '/uploads/'.$file_name;
+			//move_uploaded_file($tmp_name, '/uploads/'.$file_name);
+		}
 	} else {
 		$errors['file'] = 'Вы не загрузили файл';
 	}
@@ -92,17 +101,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		//переносим файл из временного хранилища
 		//Назначаем уникальное имя
-		$filename = uniqid().'.jpg';
+		$type = mb_substr(strstr($file_type, '/'),1);
+		$file_name = uniqid('img').'.'.$type;
 		//присваиваем новый url
-		$new_lot['url'] = '/uploads/' . $file_name;
-		move_uploaded_file($tmp_name,$new_lot['url']);
+		$new_lot['url'] = '/uploads/'.$file_name;
+		$name = basename($file_name);
+        move_uploaded_file($tmp_name, "uploads/$name");
+		//move_uploaded_file($tmp_name, '/uploads/'.$file_name);
 
 
 		//формирование запроса на вставку и если запрос удачный, вставка и переход на созданный лот
+		$sql = "INSERT INTO lots ( creator_id,  name, category_id, discription, start_price, bet_stage, finsh_date, image) 
+			VALUES (1,?,?,?,?,?,?,?)";
+		$stmt = db_get_prepare_stmt($con, $sql, $new_lot);
+		$res = mysqli_stmt_execute($stmt);
 
 		if ($res) {
-            $gif_id = mysqli_insert_id($link);
-            header("Location: gif.php?id=" . $gif_id);
+            $new_lot_id = mysqli_insert_id($con);
+            header("Location: lot.php?lot_id=" . $new_lot_id);
         }
 	}
 	
@@ -121,3 +137,4 @@ $layout = include_template('layout.php', $data = [
 		'main'            => $add_lot
  ]);
 print($layout);
+print_r($_FILES['lot-img']);
