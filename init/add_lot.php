@@ -137,4 +137,3 @@ $layout = include_template('layout.php', $data = [
 		'main'            => $add_lot
  ]);
 print($layout);
-print_r($_FILES['lot-img']);
