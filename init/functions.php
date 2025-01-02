@@ -53,3 +53,57 @@ function rest_time($dateFin) {
 
     return $arrRez;
 };
+
+
+
+///ФУНКЦИИ ВАЛИДАЦИИ
+/**
+ * Проверяет наличие категории в массиве допустимых элементов
+ * 
+ * 
+ * 
+ *
+ * */
+function exist_in_array($id, $allowed_list){
+    if (!in_array($id, $allowed_list)) {
+        return "Указана несуществующая категория";
+    }
+};
+
+/**
+ * Проверяет полеченное значение на числовой формат, целочисленность и положительность
+ * 
+ * 
+ * 
+ * */
+function input_integer($value){
+    if (!is_numeric($value)) {
+        return "Данные должны быть в числовом формате";  
+    } else {
+        if (($value%1)!=0) {
+            return "Данные должны быть целым числом";
+        }
+    }  
+};
+
+/**
+ * Проверяет полученное значение на соответствие формату гггг-мм-дд или гггг-мм-дд чч:мм
+ * Полученное значение больше текущей минимум на 1 день
+ * 
+ * 
+ * 
+ * */
+function input_date($date){
+    $format_to_check = 'Y-m-d';
+    $dateTimeObj = date_create_from_format($format_to_check, $date);
+    if ($dateTimeObj !== false && array_sum(date_get_last_errors()) === 0){
+        $dateFin = strtotime($date);
+        $dateNow = strtotime("now");
+        $diff_d    = ($dateFin - $dateNow)/3600;
+        if ($diff_d >=1) {
+            return;
+        }
+        return "Дата должна быть больше текущей даты, хотя бы на один день";
+    }
+    return "Дата должна быть фориата гггг-мм-дд чч:мм";
+}

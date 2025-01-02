@@ -5,6 +5,7 @@
     <title><?=$title;?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/flatpickr.min.css" rel="stylesheet">
 </head>
 <body>
     
@@ -20,7 +21,7 @@
             <input type="search" name="search" placeholder="Поиск лота">
             <input class="main-header__search-btn" type="submit" name="find" value="Найти">
         </form>
-        <a class="main-header__add-lot button" href="pages/add-lot.html">Добавить лот</a>
+        <a class="main-header__add-lot button" href="add_lot.php">Добавить лот</a>
 
         <nav class="user-menu">
             <?php if ($is_auth==1): ?>
