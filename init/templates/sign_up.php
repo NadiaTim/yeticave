@@ -1,9 +1,6 @@
 <main>
     <?= $categories_temp;?>
-    <?php 
-    $errors['email'] = "Некорректный адрес электронной почты";
-    ?>
-    <form class="form container form--invalid" action="https://echo.htmlacademy.ru" method="post" autocomplete="off"> <!-- form--invalid -->
+    <form class="form container form--invalid" action="../sign_up.php" method="post" autocomplete="off"> <!-- form--invalid -->
       <h2>Регистрация нового аккаунта</h2>
       <div class="form__item <?= div_invalid('email', $errors); ?>"> <!-- form__item--invalid -->
         <label for="email">E-mail <sup>*</sup></label>
@@ -27,6 +24,6 @@
       </div>
       <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
       <button type="submit" class="button">Зарегистрироваться</button>
-      <a class="text-link" href="#">Уже есть аккаунт</a>
+      <a class="text-link" href="login.php">Уже есть аккаунт</a>
     </form>
   </main>
