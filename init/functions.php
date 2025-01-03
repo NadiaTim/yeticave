@@ -78,6 +78,24 @@ function exist_in_array($id, $allowed_list){
 };
 
 /**
+ * Проверяет наличие категории в массиве допустимых элементов
+ * 
+ *
+ * */
+function valid_email($email, $allowed_list){
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        foreach ($allowed_list as $value) {
+            if (stripos($value, $email) !== false){
+                return "Такой пользователь уже существует";
+            }
+        }
+    } else {
+        return "Введен некорректный email";
+    }
+       
+};
+
+/**
  * Проверяет полеченное значение на числовой формат, целочисленность и положительность
  * 
  * 

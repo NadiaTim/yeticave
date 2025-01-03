@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	//получаем в массив нового пользователя поля из отправленной формы
 	//при отсутствии поля зачение переменной NULL
 	$new_user = filter_input_array(INPUT_POST, [
-		'email'    =>FILTER_VALIDATE_EMAIL,
+		'email'    =>FILTER_DEFAULT,
 		'password' =>FILTER_DEFAULT,
 		'name'     =>FILTER_DEFAULT,
 		'message'  =>FILTER_DEFAULT], true);
@@ -38,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$errors = [];
 	$rules = [
 		//проверка уникальности email
-		'category' => function ($value) use ($emails) {
-			return exist_in_array($value, $emails);
+		'email' => function ($value) use ($emails) {
+			return valid_email($value, $emails);
 		}
 	];
 
@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 	}
 	$errors = array_filter($errors);
+	$new_user['password'] = password_hash($new_user['password'], PASSWORD_DEFAULT);
 
 	if (count($errors)) {
 		$sign_up = include_template('sign_up.php', [
@@ -71,7 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
 	//вывод отображения основного содержания страницы (блок регистрации)
 	$sign_up = include_template('sign_up.php', [
-        'categories_temp' => $categories_temp
+		'categories_temp' => $categories_temp,
+		'errors'          => []
     ]);
 }
 
@@ -80,7 +82,7 @@ $layout = include_template('layout.php', $data = [
 		'title'           => "Регистрация нового аккаунта",
 		'categories_temp' => $categories_temp,
 		'is_auth'         => $is_auth,
-		'main'            => $categories_temp
+		'main'            => $sign_up
  ]);
 print($layout);
 
