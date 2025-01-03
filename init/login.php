@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 		//если пользователь есть проверяем корректность его пароля
 			if (password_verify($user['password'], $user_sql['password'])) {
 				//начинаем сессию, переходим на главную страницу
-				$_SESSION['user'] = $user;
+				$_SESSION['user'] = $user_sql;
 				//подумать как перенаправить на страницу откуда пользователь пришел
 				header("Location: /index.php");
 				exit();
