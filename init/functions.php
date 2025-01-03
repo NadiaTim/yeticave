@@ -54,6 +54,13 @@ function rest_time($dateFin) {
     return $arrRez;
 };
 
+//функция вывода css-класса поля с ошибкой
+function div_invalid(string $a, array $errors){
+    if (isset($errors[$a])) {
+        echo " form__item--invalid";
+    }
+};
+
 
 
 ///ФУНКЦИИ ВАЛИДАЦИИ
