@@ -54,6 +54,13 @@ function rest_time($dateFin) {
     return $arrRez;
 };
 
+//функция вывода css-класса поля с ошибкой
+function div_invalid(string $a, array $errors){
+    if (isset($errors[$a])) {
+        echo " form__item--invalid";
+    }
+};
+
 
 
 ///ФУНКЦИИ ВАЛИДАЦИИ
@@ -68,6 +75,24 @@ function exist_in_array($id, $allowed_list){
     if (!in_array($id, $allowed_list)) {
         return "Указана несуществующая категория";
     }
+};
+
+/**
+ * Проверяет наличие категории в массиве допустимых элементов
+ * 
+ *
+ * */
+function valid_email($email, $allowed_list){
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        foreach ($allowed_list as $value) {
+            if (stripos($value, $email) !== false){
+                return "Такой пользователь уже существует";
+            }
+        }
+    } else {
+        return "Введен некорректный email";
+    }
+       
 };
 
 /**
