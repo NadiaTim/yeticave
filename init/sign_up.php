@@ -65,7 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			'new_user'        => $new_user
         ]);
 	} else {
-		header("Location: login.php");
+		$sql = "INSERT INTO users (email, password, name, contact) VALUES (?,?,?,?);";
+		$stmt = db_get_prepare_stmt($con, $sql,$new_user);
+		$res = mysqli_stmt_execute($stmt);
+		if ($res) {
+			header("Location: login.php");
+		}
+		
 	}
 	
 
