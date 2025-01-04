@@ -38,6 +38,7 @@ CREATE TABLE lots
 	FOREIGN KEY (winner_id) REFERENCES users (user_id),
 	FOREIGN KEY (category_id) REFERENCES categories (category_id)
 );
+CREATE FULLTEXT INDEX lot_search ON lots(name, discription);
 
 CREATE TABLE bets
 (
