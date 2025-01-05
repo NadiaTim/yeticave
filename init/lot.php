@@ -19,52 +19,87 @@ if (!$con) {
     //$error = mysqli_connect_error();
     header("Location: https://yeticave.local/error.php?error=500");
     die();
-} else {
+}
+
     //получаем информацию по лоту
-    $sql = "SELECT l.lot_id, l.name name, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date, l.discription, l.bet_stage
-		FROM (SELECT * from lots WHERE lot_id = ?) l
-		JOIN categories c 
-		ON l.category_id = c.category_id
-		LEFT JOIN ( SELECT lot_id, max(price) price
-			FROM bets
-			GROUP BY lot_id) p 
-		ON l.lot_id = p.lot_id;";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt,'i', $get_lot_id);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    if (mysqli_num_rows($res)>=1) {
-        $lot = mysqli_fetch_assoc($res);
+$sql = "SELECT l.lot_id, l.name name, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date, l.discription, l.bet_stage
+	FROM (SELECT * from lots WHERE lot_id = ?) l
+	JOIN categories c 
+	ON l.category_id = c.category_id
+	LEFT JOIN ( SELECT lot_id, max(price) price
+		FROM bets
+		GROUP BY lot_id) p 
+	ON l.lot_id = p.lot_id;";
+$stmt = mysqli_prepare($con, $sql);
+mysqli_stmt_bind_param($stmt,'i', $get_lot_id);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+if (mysqli_num_rows($res)>=1) {
+    $lot = mysqli_fetch_assoc($res)??NULL;
+    $lot['min_bet'] = $lot['fin_price'] + $lot['bet_stage'];
+} else {
+    //вывод ошибки запроса, если строк не найдено
+    //$error = mysqli_error($con);
+    header("Location: https://yeticave.local/error.php");
+    die();
+}
+
+
+
+if ($_SERVER['REQUEST_METHOD']=='POST' && isset($lot)) {
+    //Получаем введенное пользователем значение ставки
+    $new_bet['cost'] = filter_input(INPUT_POST, 'cost')??NULL;
+    //print($new_bet['cost'].">=".$lot['min_bet']);
+    if ($new_bet['cost']>=$lot['min_bet']) {
+        $new_bet['user_id'] = $_SESSION['user']['user_id'];
+        $new_bet['lot_id'] = $lot['lot_id'];
+
+        //начинаем транзакцию
+        mysqli_query($con, "START TRANSACTION");
+
+        //выполняем первый запрос
+        $sql_1 = "INSERT INTO bets (price, user_id, lot_id) VALUES (?,?,?)";
+        $stmt = db_get_prepare_stmt($con, $sql_1, $new_bet);
+        $res1 = mysqli_stmt_execute($stmt);
+
+        //выполняем второй запрос
+        $sql_2 = "UPDATE lots SET winner_id=? WHERE lot_id=?";
+        $stmt = db_get_prepare_stmt($con, $sql_2, [$new_bet['user_id'], $new_bet['lot_id']]);
+        $res2 = mysqli_stmt_execute($stmt);
+
+        //завершаем транзакцию
+        if ($res1 && $res2) {
+            mysqli_query($con, "COMMIT");
+        } else {
+            mysqli_query($con, "ROLLBACK");
+            $new_bet['error'] = "Ставка не учтена";
+        }
     } else {
-        //вывод ошибки запроса, если строк не найдено
-        //$error = mysqli_error($con);
-        header("Location: https://yeticave.local/error.php");
-        die();
+        $new_bet['error'] = "Ставка должна быть больше минимальной";
     }
-
-    //получаем историю ставок по лоту
-    $sql = "SELECT price, bet_date, u.name
-        FROM bets b
-        JOIN users u ON b.user_id=u.user_id
-        WHERE lot_id=?
-        ORDER BY bet_date DESC;";
-    $stmt = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($stmt,'i', $get_lot_id);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $bets = (mysqli_num_rows($res)>=1 && $res)?mysqli_fetch_all($res, MYSQLI_ASSOC):NULL;
-
+} else {
+    $new_bet= null;
 }
 
-if ($_SERVER['REQUEST_METHOD']=='POST') {
-    // code...
-}
+//получаем историю ставок по лоту
+$sql = "SELECT price, bet_date, u.name
+    FROM bets b
+    JOIN users u ON b.user_id=u.user_id
+    WHERE lot_id=?
+    ORDER BY bet_date DESC;";
+$stmt = mysqli_prepare($con, $sql);
+mysqli_stmt_bind_param($stmt,'i', $get_lot_id);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+$bets = (mysqli_num_rows($res)>=1 && $res)?mysqli_fetch_all($res, MYSQLI_ASSOC):NULL;
 
 $lot_temp = include_template('lot.php', [
-            'categories_temp' => $categories_temp,
-            'lot'             => $lot,
-            'bets'            => $bets
-        ]);
+    'categories_temp' => $categories_temp,
+    'lot'             => $lot,
+    'bets'            => $bets,
+    'new_bet'         => $new_bet
+]);
+
 
 //вывод отображения страницы
 $layout = include_template('layout.php', $data = [

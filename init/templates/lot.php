@@ -24,19 +24,14 @@
                 <span class="lot-item__cost"><?= price_format($lot['fin_price']);?></span>
               </div>
               <div class="lot-item__min-cost">
-                Мин. ставка <span>
-                  <?php
-                  $min_bet = $lot['fin_price']+ $lot['bet_stage'];
-                  print(price_format($min_bet));
-                  ?> 
-                </span>
+                Мин. ставка <span><?= price_format($lot['min_bet']);?> </span>
               </div>
             </div>
-            <form class="lot-item__form" action="lot.php" method="post" autocomplete="off">
-              <p class="lot-item__form-item form__item form__item--invalid">
+            <form class="lot-item__form" action="lot.php?lot_id=<?= $lot['lot_id']; ?>" method="post" autocomplete="off">
+              <p class="lot-item__form-item form__item <?= isset($new_bet['error'])?"form__item--invalid":""; ?>">
                 <label for="cost">Ваша ставка</label>
-                <input id="cost" type="text" name="cost" placeholder="12 000">
-                <span class="form__error">Введите наименование лота</span>
+                <input id="cost" type="text" name="cost" placeholder="<?= $lot['min_bet']; ?>" value="<?= isset($new_bet['error'])?$new_bet['cost']:"" ?>">
+                <span class="form__error"><?= isset($new_bet['error'])?$new_bet['error']:""; ?></span>
               </p>
               <button type="submit" class="button">Сделать ставку</button>
             </form>
