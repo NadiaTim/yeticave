@@ -13,6 +13,8 @@ require 'connect.php';
 //получение значения текущего лота из параметра запроса
 $get_lot_id = (int) filter_input(INPUT_GET, 'lot_id');
 
+
+
 //получение лота
 if (!$con) {
     //вывод ошибки подключения
@@ -22,7 +24,7 @@ if (!$con) {
 }
 
     //получаем информацию по лоту
-$sql = "SELECT l.lot_id, l.name name, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date, l.discription, l.bet_stage
+$sql = "SELECT l.lot_id, l.name name, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date, l.discription, l.bet_stage, l.creator_id
 	FROM (SELECT * from lots WHERE lot_id = ?) l
 	JOIN categories c 
 	ON l.category_id = c.category_id
@@ -45,11 +47,10 @@ if (mysqli_num_rows($res)>=1) {
 }
 
 
-
 if ($_SERVER['REQUEST_METHOD']=='POST' && isset($lot)) {
     //Получаем введенное пользователем значение ставки
     $new_bet['cost'] = filter_input(INPUT_POST, 'cost')??NULL;
-    //print($new_bet['cost'].">=".$lot['min_bet']);
+
     if ($new_bet['cost']>=$lot['min_bet']) {
         $new_bet['user_id'] = $_SESSION['user']['user_id'];
         $new_bet['lot_id'] = $lot['lot_id'];
@@ -59,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST' && isset($lot)) {
 
         //выполняем первый запрос
         $sql_1 = "INSERT INTO bets (price, user_id, lot_id) VALUES (?,?,?)";
-        $stmt = db_get_prepare_stmt($con, $sql_1, $new_bet);
+        $stmt = db_get_prepare_stmt($con, $sql_1, [$new_bet['cost'],$new_bet['user_id'],$new_bet['lot_id'] ]);
         $res1 = mysqli_stmt_execute($stmt);
 
         //выполняем второй запрос
@@ -82,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD']=='POST' && isset($lot)) {
 }
 
 //получаем историю ставок по лоту
-$sql = "SELECT price, bet_date, u.name
+$sql = "SELECT price, bet_date, u.name, u.user_id
     FROM bets b
     JOIN users u ON b.user_id=u.user_id
     WHERE lot_id=?
@@ -93,13 +94,28 @@ mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 $bets = (mysqli_num_rows($res)>=1 && $res)?mysqli_fetch_all($res, MYSQLI_ASSOC):NULL;
 
+//проверяем наличия авторизации пользователя для добавления новой ставки
+if (isset($_SESSION['user'])) {
+    $new_bet['notallowed'] = NULL;
+    
+    if(isset($bets[0]['user_id'])){
+        $new_bet['notallowed'] = $_SESSION['user']['user_id'] == $bets[0]['user_id']?"Ваша ставка была последней":$new_bet['notallowed'];
+    }
+    $new_bet['notallowed'] = $_SESSION['user']['user_id'] == $lot['creator_id']? "Вы - владелец лота":$new_bet['notallowed'];
+    $rest_time = rest_time($lot['finish_date']);
+    $new_bet['notallowed'] = ($rest_time[0]==0 && $rest_time[1]==0 && $rest_time[2]==0)?"Время вышло. Ставки больше не принимаются":$new_bet['notallowed'];
+
+} else {
+    $new_bet['notallowed'] = "Авторизируйтесь, чтобы сделать ставку";
+}
+
+
 $lot_temp = include_template('lot.php', [
     'categories_temp' => $categories_temp,
     'lot'             => $lot,
     'bets'            => $bets,
     'new_bet'         => $new_bet
 ]);
-
 
 //вывод отображения страницы
 $layout = include_template('layout.php', $data = [

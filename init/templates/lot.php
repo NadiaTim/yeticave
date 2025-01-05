@@ -12,7 +12,10 @@
         </div>
         <div class="lot-item__right">
 
-        <?php if(isset($_SESSION['user'])): ?>
+        <?php if(isset($new_bet['notallowed'])): ?>
+          <p><?= $new_bet['notallowed']; ?></p>
+  
+        <?php else: ?>
           <div class="lot-item__state ">
             <?php $restTime=rest_time($lot['finish_date']); ?>
             <div class="lot-item__timer timer <?=($restTime[0]<1)&&($restTime[1]<1)?"timer--finishing":"";?>">
@@ -36,8 +39,6 @@
               <button type="submit" class="button">Сделать ставку</button>
             </form>
           </div>
-        <?php else: ?>
-          <p>Авторизируйтесть, чтобы сделать ставку</p>
         <?php endif; ?>
           <div class="history">
             <h3>История ставок <?= isset($bets)>0?"(<span>".count($bets)."</span>)":"";?></h3>
