@@ -11,6 +11,7 @@
           <p class="lot-item__description"><?=$lot['discription']; ?></p>
         </div>
         <div class="lot-item__right">
+
         <?php if(isset($_SESSION['user'])): ?>
           <div class="lot-item__state ">
             <?php $restTime=rest_time($lot['finish_date']); ?>
@@ -27,11 +28,11 @@
                   <?php
                   $min_bet = $lot['fin_price']+ $lot['bet_stage'];
                   print(price_format($min_bet));
-                  ?>
+                  ?> 
                 </span>
               </div>
             </div>
-            <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
+            <form class="lot-item__form" action="lot.php" method="post" autocomplete="off">
               <p class="lot-item__form-item form__item form__item--invalid">
                 <label for="cost">Ваша ставка</label>
                 <input id="cost" type="text" name="cost" placeholder="12 000">
@@ -40,17 +41,24 @@
               <button type="submit" class="button">Сделать ставку</button>
             </form>
           </div>
+        <?php else: ?>
+          <p>Авторизируйтесть, чтобы сделать ставку</p>
         <?php endif; ?>
           <div class="history">
-            <h3>История ставок (<span>10</span>)</h3>
+            <h3>История ставок <?= isset($bets)>0?"(<span>".count($bets)."</span>)":"";?></h3>
+            <?php if(isset($bets)): ?>
             <table class="history__list">
+              <?php foreach ($bets as $bet):?>
               <tr class="history__item">
-                <td class="history__name">Иван</td>
-                <td class="history__price">10 999 р</td>
-                <td class="history__time">5 минут назад</td>
+                <td class="history__name"><?= $bet['name'];?></td>
+                <td class="history__price"><?= price_format($bet['price']);?></td>
+                <td class="history__time"><?= $bet['bet_date'];?></td>
               </tr>
-              
+            <?php endforeach; ?>
             </table>
+            <?php else: ?>
+            <p>Ставок нет</p>
+            <?php  endif;?>
           </div>
         </div>
       </div>
