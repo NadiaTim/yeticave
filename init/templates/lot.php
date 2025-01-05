@@ -48,7 +48,21 @@
               <tr class="history__item">
                 <td class="history__name"><?= $bet['name'];?></td>
                 <td class="history__price"><?= price_format($bet['price']);?></td>
-                <td class="history__time"><?= $bet['bet_date'];?></td>
+
+                <?php 
+                //$time_ago = rest_time($bet['bet_date']);
+                $time_ago = time_ago($bet['bet_date']);
+                if ($time_ago[0]<1) {
+                  $time = $time_ago[1]." ".get_noun_plural_form($time_ago[1],'минута', 'минуты', 'минут')." назад";
+                } else if ($time_ago[0]<4) {
+                  $time = $time_ago[0]." ".get_noun_plural_form($time_ago[0],'час', 'часа', 'часов')." назад";
+                } else {
+                  $time = date_format(date_create($bet['bet_date']), 'd.m.Y H:m');
+                }
+                
+
+                ?>
+                <td class="history__time"><?= $time;?></td>
               </tr>
             <?php endforeach; ?>
             </table>
