@@ -54,6 +54,53 @@ function rest_time($dateFin) {
     return $arrRez;
 };
 
+/**
+ * Рассчитывает оставшееся количество часов и минут от введенной даты до текущей
+ * Примеры использования (текущая дата 2024-12-25 0:34):
+ * time_ago('2024-12-26'); //
+ * 
+ * 
+ * на вход функция принимает дату в формате ГГГГ-ММ-ДД;
+ * возвращает массив, где первый элемент — целое количество часов до даты, а второй — остаток в минутах.
+ * 
+ * 
+ */
+function time_ago($date) {
+    $date = strtotime($date);
+    $dateNow = strtotime("now");
+    $diff    = $dateNow-$date;
+    if ($diff>0) {
+        $hours   = floor($diff/3600);
+        $minutes = floor($diff/60) - $hours*60;
+    } else {
+        $hours   = 0;
+        $minutes = 0;
+    }
+    
+    
+    //$hours   = str_pad($hours, 2, "0", STR_PAD_LEFT);
+    //$minutes = str_pad($minutes, 2, "0", STR_PAD_LEFT);
+    $arrRez[] = $hours;
+    $arrRez[] = $minutes;
+
+    return $arrRez;
+};
+//функция вывода прошедшего времени в правильном формате
+function time_ago_text($bet_date)
+{
+    $time_ago = time_ago($bet_date);
+    if ($time_ago[0]<1) {
+        $time = $time_ago[1]." ".get_noun_plural_form($time_ago[1],'минута', 'минуты', 'минут')." назад";
+    } else if ($time_ago[0]<4) {
+        $time = $time_ago[0]." ".get_noun_plural_form($time_ago[0],'час', 'часа', 'часов')." назад";
+    } else {
+        $time = date_format(date_create($bet_date), 'd.m.Y H:m');
+    }
+    return $time;
+}
+
+
+
 //функция вывода css-класса поля с ошибкой
 function div_invalid(string $a, array $errors){
     if (isset($errors[$a])) {
