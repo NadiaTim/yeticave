@@ -2,34 +2,55 @@
     <?php $categories_temp;?>
     <section class="rates container">
       <h2>Мои ставки</h2>
+      <?php if (isset($bets)): ?>
       <table class="rates__list">
-        <tr class="rates__item">
+      <?php foreach ($bets as $bet): ?>
+        <?php 
+        switch ($bet['status_id']):
+          case "win": $class_tr = "rates__item--win"; 
+            $class_timer = "timer--win";
+            break;
+          case "end": $class_tr = "rates__item--end"; 
+            $class_timer = "timer--end";
+            break;
+          case "finishing": $class_tr = ""; 
+            $class_timer = "timer--finishing";
+            break;
+          default: $class_tr = ""; $class_timer = "";break;
+        endswitch; 
+        ?>
+
+        <tr class="rates__item <?= $class_tr;?>">
           <td class="rates__info">
             <div class="rates__img">
-              <img src="../img/rate1.jpg" width="54" height="40" alt="Сноуборд">
+              <img src="<?= $bet['image'];?>" width="54" height="40" alt="<?= $bet['lot_name'];?>">
             </div>
-            <?php if($bet['status']=='win'): ?>
+            <?php if($bet['status_id']=='win'): ?>
               <div>
-                <h3 class="rates__title"><a href="lot.html">Крепления Union Contact Pro 2015 года размер L/XL</a></h3>
-                <p>Телефон +7 900 667-84-48, Скайп: Vlas92. Звонить с 14 до 20</p>
+                <h3 class="rates__title"><a href="lot.html?lot_id=<?= $bet['lot_id'];?>"><?= $bet['lot_name'];?></a></h3>
+                <p><?= $bet['contact'];?></p>
               </div>
             <?php else: ?>
-              <h3 class="rates__title"><a href="lot.html">2014 Rossignol District Snowboard</a></h3>
+              <h3 class="rates__title"><a href="lot.html?lot_id=<?= $bet['lot_id'];?>"><?= $bet['lot_name'];?></a></h3>
             <?php endif; ?>
           </td>
           <td class="rates__category">
-            Доски и лыжи
+            <?= $bet['cat_name'];?>
           </td>
           <td class="rates__timer">
-            <div class="timer timer--finishing">07:13:34</div>
+            <div class="timer <?= $class_timer;?>"><?= $bet['status'];?></div>
           </td>
           <td class="rates__price">
-            10 999 р
+            <?= price_format($bet['price']);?>
           </td>
           <td class="rates__time">
-            5 минут назад
+            <?= $bet['time_ago'];?>
           </td>
         </tr>
+      <?php endforeach; ?>
       </table>
+      <?php else: ?>
+        <p>У вас нет ставок</p>
+      <?php endif; ?>
     </section>
   </main>
