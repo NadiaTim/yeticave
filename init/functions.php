@@ -85,6 +85,21 @@ function time_ago($date) {
 
     return $arrRez;
 };
+//функция вывода прошедшего времени в правильном формате
+function time_ago_text($bet_date)
+{
+    $time_ago = time_ago($bet_date);
+    if ($time_ago[0]<1) {
+        $time = $time_ago[1]." ".get_noun_plural_form($time_ago[1],'минута', 'минуты', 'минут')." назад";
+    } else if ($time_ago[0]<4) {
+        $time = $time_ago[0]." ".get_noun_plural_form($time_ago[0],'час', 'часа', 'часов')." назад";
+    } else {
+        $time = date_format(date_create($bet_date), 'd.m.Y H:m');
+    }
+    return $time;
+}
+
+
 
 //функция вывода css-класса поля с ошибкой
 function div_invalid(string $a, array $errors){
