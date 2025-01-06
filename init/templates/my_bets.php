@@ -27,11 +27,11 @@
             </div>
             <?php if($bet['status_id']=='win'): ?>
               <div>
-                <h3 class="rates__title"><a href="lot.html?lot_id=<?= $bet['lot_id'];?>"><?= $bet['lot_name'];?></a></h3>
+                <h3 class="rates__title"><a href="lot.php?lot_id=<?= $bet['lot_id'];?>"><?= $bet['lot_name'];?></a></h3>
                 <p><?= $bet['contact'];?></p>
               </div>
             <?php else: ?>
-              <h3 class="rates__title"><a href="lot.html?lot_id=<?= $bet['lot_id'];?>"><?= $bet['lot_name'];?></a></h3>
+              <h3 class="rates__title"><a href="lot.php?lot_id=<?= $bet['lot_id'];?>"><?= $bet['lot_name'];?></a></h3>
             <?php endif; ?>
           </td>
           <td class="rates__category">
