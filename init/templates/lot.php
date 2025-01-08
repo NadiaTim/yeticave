@@ -11,7 +11,6 @@
           <p class="lot-item__description"><?=$lot['discription']; ?></p>
         </div>
         <div class="lot-item__right">
-
         <?php if(isset($new_bet['notallowed'])): ?>
           <p><?= $new_bet['notallowed']; ?></p>
   

@@ -35,6 +35,9 @@ if (!$con) {
 
 
 //вывод отображения страницы
+$categories_temp = include_template('categories.php', [
+            'categories' => $categories
+        ]);
 
 $layout = include_template('layout.php', $data = [
         'title'      => 'Главная страница',

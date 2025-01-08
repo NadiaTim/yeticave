@@ -22,14 +22,14 @@ foreach ($categories as $category) {
     }
 }
 if ($exist<>1) {
-    header("Location: https://yeticave.local/error.php");
+    header("Location: https://yeticave.local/error.php?error=404");
     die();
 }
 
 //получение массива лотов
 if (!$con) {
     $error = mysqli_connect_error();
-    header("Location: https://yeticave.local/error.php");
+    header("Location: https://yeticave.local/error.php?error=500");
     die();
 } else {
     $sql = "SELECT l.lot_id, l.name, l.start_price, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date

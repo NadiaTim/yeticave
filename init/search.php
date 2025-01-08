@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD']=='GET') {
 			$lots =count($lots)>0?$lots:NULL;
 	} else {
 		// выводим ошибку если запрос пустой
-		header("Location: error.php?error=411");
+		header("Location: error.php?error=400");
 		exit();
 	}
 } else {

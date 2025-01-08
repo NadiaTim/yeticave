@@ -13,8 +13,6 @@ require 'connect.php';
 //получение значения текущего лота из параметра запроса
 $get_lot_id = (int) filter_input(INPUT_GET, 'lot_id');
 
-
-
 //получение лота
 if (!$con) {
     //вывод ошибки подключения
@@ -42,7 +40,7 @@ if (mysqli_num_rows($res)>=1) {
 } else {
     //вывод ошибки запроса, если строк не найдено
     //$error = mysqli_error($con);
-    header("Location: https://yeticave.local/error.php");
+    header("Location: https://yeticave.local/error.php?error=404");
     die();
 }
 
