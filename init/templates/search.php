@@ -1,23 +1,11 @@
-<main class="container">
-    <section class="promo">
-        <h2 class="promo__title">Нужен стафф для катки?</h2>
-        <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
-        <ul class="promo__list">
-            <!--заполните этот список из массива категорий-->
-            <?php foreach ($categories as $category): ?>
-            <li class="promo__item promo__item--<?= $category['code']; ?>">
-                <a class="promo__link" href="lots_by_categories.php?category_code=<?=$category['code']; ?>"><?= $category['name']; ?></a>
-            </li>
-            <?php endforeach; ?>
-        </ul>
-    </section>
-    <section class="lots">
-        <div class="lots__header">
-            <h2>Открытые лоты</h2>
-        </div>
+  <main>
+    <?php $categories_temp; ?>
+    <div class="container">
+      <section class="lots">
+        <h2>Результаты поиска по запросу «<span><?= $search; ?></span>»</h2>
+        <?php if (isset($lots)):?>
         <ul class="lots__list">
-            <!--заполните этот список из массива с товарами-->
-            <?php foreach ($lots as $lot): ?>
+          <?php foreach ($lots as $lot): ?>
             <li class="lots__item lot">
                 <div class="lot__image">
                     <img src="<?=$lot['image'];?>" width="350" height="260" alt="<?=$lot['name'];?>">
@@ -39,7 +27,23 @@
                     </div>
                 </div>
             </li>
-        <?php endforeach; ?>
+          <?php endforeach; ?>
         </ul>
-    </section>
-</main>
+      </section>
+      <?php if (count($lots)>9): ?>
+      <ul class="pagination-list">
+        <li class="pagination-item pagination-item-prev"><a>Назад</a></li>
+        <li class="pagination-item pagination-item-active"><a>1</a></li>
+        <li class="pagination-item"><a href="#">2</a></li>
+        <li class="pagination-item"><a href="#">3</a></li>
+        <li class="pagination-item"><a href="#">4</a></li>
+        <li class="pagination-item pagination-item-next"><a href="#">Вперед</a></li>
+      </ul>
+    <?php endif; ?>
+     <?php else:  ?>
+        <h3>По Вашему запросу ничего не найдено</h3>
+      </section>
+      <?php endif ?>
+      
+    </div>
+  </main>

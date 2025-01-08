@@ -9,14 +9,32 @@ require 'data.php';
 require 'connect.php';
 //содержит подключение к БД
 
+
+
+//получение значения кода текущей категории из параметра запроса
+$get_category = filter_input(INPUT_GET, 'category_code');
+
+$exist = 0;//счетчик существования
+foreach ($categories as $category) {
+    if ($category['code']==$get_category) {
+        $category_title = $category['name'];
+        $exist = $exist + 1;
+    }
+}
+if ($exist<>1) {
+    header("Location: https://yeticave.local/error.php");
+    die();
+}
+
 //получение массива лотов
 if (!$con) {
-    print("Ошибка подключения: ". mysqli_connect_error());
     $error = mysqli_connect_error();
+    header("Location: https://yeticave.local/error.php");
+    die();
 } else {
     $sql = "SELECT l.lot_id, l.name, l.start_price, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date
             FROM lots l
-            JOIN categories c 
+            JOIN (SELECT * FROM categories WHERE code = '$get_category') c 
             ON l.category_id = c.category_id
             LEFT JOIN ( SELECT lot_id, max(price) price
                 FROM bets
@@ -25,28 +43,28 @@ if (!$con) {
             WHERE l.finsh_date>now()
             ORDER BY l.create_date DESC;";
     $result = mysqli_query($con, $sql);
-    if ($result) {
+    if (mysqli_num_rows($result)>=1) {
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
-        $error = mysqli_error($con);
-        print("Ошибка запроса: ".$error);
+        $lots = [];  
     }
 }
 
 
 //вывод отображения страницы
-$categories_temp = include_template('categories.php', [
-            'categories' => $categories
-        ]);
+
+$lots_temp = include_template('lots_by_categories.php', [
+	'categories_temp' => $categories_temp,
+	'lots' => $lots,
+    'category_title' => $category_title
+]);
+
 
 $layout = include_template('layout.php', $data = [
-        'title'      => 'Главная страница',
-        'categories_temp' => $categories_temp,
-        'is_auth'    =>$is_auth,
-        'main'       => include_template('main.php', [
-            'categories' => $categories,
-            'lots'       => $lots
-        ])
+    'title'      => $category_title,
+    'categories_temp' => $categories_temp,
+    'is_auth'    =>$is_auth,
+    'main'       => $lots_temp
  ]);
 print($layout);
 
