@@ -1,7 +1,7 @@
 <main>
     <?=$categories_temp;?>
     <section class="lot-item container">
-        <h2>404 Страница не найдена</h2>
-        <p>Данной страницы не существует на сайте.</p>
+        <h2><?= $error['name'];?></h2>
+        <p><?= $error['discription'];?></p>
     </section>
  </main>

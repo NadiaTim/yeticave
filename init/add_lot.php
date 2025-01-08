@@ -139,6 +139,7 @@ if (isset($_SESSION['user'])){
 	 ]);
 	print($layout);
 } else {
-	header("Location: error.php?error=403");
+	//вывод ошибки об отсутствии авторизации
+	header("Location: error.php?error=401");
 	exit;
 }

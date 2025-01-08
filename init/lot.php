@@ -40,7 +40,7 @@ if (mysqli_num_rows($res)>=1) {
 } else {
     //вывод ошибки запроса, если строк не найдено
     //$error = mysqli_error($con);
-    header("Location: https://yeticave.local/error.php");
+    header("Location: https://yeticave.local/error.php?error=404");
     die();
 }
 

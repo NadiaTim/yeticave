@@ -17,7 +17,7 @@ if (isset($_SESSION['user'])) {
 		JOIN categories c ON l.category_id=c.category_id
 		WHERE b.user_id = ".$_SESSION['user']['user_id'];
 	$res = mysqli_query($con, $sql);
-	$bets = $res?mysqli_fetch_all($res, MYSQLI_ASSOC):header("Location: error.php");
+	$bets = $res?mysqli_fetch_all($res, MYSQLI_ASSOC):header("Location: error.php?error=503");
 	if (isset($bets)) {
 		foreach ($bets as $key => $bet) {
 			$n_bets[$key] = $bet;
@@ -48,7 +48,7 @@ if (isset($_SESSION['user'])) {
 	}
 
 } else {
-	header("Location: error.php?error=403");
+	header("Location: error.php?error=401");
 }
 
 
