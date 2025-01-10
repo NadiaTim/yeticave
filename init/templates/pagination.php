@@ -9,7 +9,7 @@
             <a href="<?= str_contains($url0, '?')?$url0."&&page=".$cur_page-1:$url0."?page=".$cur_page-1;?>">Назад</a>
         </li>
         <?php for ($i=1; $i <= $page_count; $i++):
-            $url = stristr($url, '&&page', true);
+            $url = stristr($url, '&&page', true)?stristr($url, '&&page', true):$url;;
             $url = str_contains($url, '?')?$url."&&page=".$i:$url."?page=".$i; 
         ?>
         <li class="pagination-item <?= $i===$cur_page?"pagination-item-active":""; ?>">
