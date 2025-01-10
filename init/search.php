@@ -10,13 +10,22 @@ require 'connect.php';
 //содержит подключение к БД
 
 
-if ($_SERVER['REQUEST_METHOD']=='GET') {
+if ($_GET['search']) {
 	//получение значения кода текущей категории из параметра запроса
 	$get_search = filter_input(INPUT_GET, 'search')??NULL;
 	$get_search = trim($get_search);
 
 
 	if ($get_search) {
+
+		//Определяем количество элементов на странице
+		$page_items = 2;
+
+		//определяем текущую страницу
+		$cur_page = $_GET['page']??1;
+		//проверяем текущую страницу на допустимость диапазона(min)
+		$cur_page = $cur_page<1?1:$cur_page;
+
 		//получчаем список лотов
 		$sql = "SELECT l.lot_id, l.name, l.start_price, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date
             FROM lots l
@@ -29,13 +38,24 @@ if ($_SERVER['REQUEST_METHOD']=='GET') {
             WHERE l.finsh_date>now() 
             AND MATCH(l.name, discription) AGAINST(?)
             ORDER BY l.create_date DESC;";
+        $stmt = mysqli_prepare($con, $sql);
+		mysqli_stmt_bind_param($stmt,'s', $get_search);
+		mysqli_stmt_execute($stmt);
+		$res = mysqli_stmt_get_result($stmt);
+		$lots =$res?mysqli_fetch_all($res, MYSQLI_ASSOC):header("Location: error.php?error=503");
+		$lots =count($lots)>0?$lots:NULL;
 
-            $stmt = mysqli_prepare($con, $sql);
-			mysqli_stmt_bind_param($stmt,'s', $get_search);
-			mysqli_stmt_execute($stmt);
-			$res = mysqli_stmt_get_result($stmt);
-			$lots =$res?mysqli_fetch_all($res, MYSQLI_ASSOC):NULL;
-			$lots =count($lots)>0?$lots:NULL;
+		//определяем общее количество лотов
+	    $items_count = mysqli_num_rows($res);
+	    //определяем полученное количество страниц
+	    $page_count = ceil($items_count/$page_items);
+	    //проверяем текущую страницу на допустимость диапазона(max)
+	    $cur_page = $cur_page>$page_count?$page_count:$cur_page;
+	    //определяем с какой записи необходимо отображать содержание
+	    $offset = ($cur_page-1)*$page_items;
+	    $lots = array_slice($lots, $offset, $page_items);
+		
+
 	} else {
 		// выводим ошибку если запрос пустой
 		header("Location: error.php?error=400");
@@ -47,10 +67,17 @@ if ($_SERVER['REQUEST_METHOD']=='GET') {
 	exit();
 }
 
+//отображение шаблона пагинации
+$pagination = include_template('pagination.php', [
+    'cur_page'   => $cur_page,
+    'page_count' => $page_count ]);
+
+//отображение шаблона основного содержимого страницы
 $search_tmp = include_template('search.php', [
 	'categories_temp' => $categories_temp,
 	'lots'            => $lots,
-	'search'          => $get_search
+	'search'          => $get_search,
+	'pagination'	  => $pagination
 ]);
 
 
