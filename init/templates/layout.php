@@ -19,7 +19,7 @@
         </a>
         <form class="main-header__search" method="get" action="search.php" autocomplete="off">
             <input type="search" name="search" placeholder="Поиск лота">
-            <input class="main-header__search-btn" type="submit" name="find" value="Найти">
+            <input class="main-header__search-btn" type="submit" >
         </form>
         <?php if (isset($_SESSION['user'])): ?>
         <a class="main-header__add-lot button" href="add_lot.php">Добавить лот</a>

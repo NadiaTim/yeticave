@@ -26,6 +26,14 @@ if ($exist<>1) {
     die();
 }
 
+//Определяем количество элементов на странице
+$page_items = 6;
+
+//определяем текущую страницу
+$cur_page = $_GET['page']??1;
+//проверяем текущую страницу на допустимость диапазона(min)
+$cur_page = $cur_page<1?1:$cur_page;
+
 //получение массива лотов
 if (!$con) {
     $error = mysqli_connect_error();
@@ -42,29 +50,43 @@ if (!$con) {
             ON l.lot_id = p.lot_id
             WHERE l.finsh_date>now()
             ORDER BY l.create_date DESC;";
-    $result = mysqli_query($con, $sql);
-    if (mysqli_num_rows($result)>=1) {
-        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } else {
-        $lots = [];  
-    }
+    $res = mysqli_query($con, $sql);
+    $lots = mysqli_num_rows($res)>=1?mysqli_fetch_all($res, MYSQLI_ASSOC):[];
+
+    //определяем общее количество лотов
+    $items_count = mysqli_num_rows($res);
+    //определяем полученное количество страниц
+    $page_count = ceil($items_count/$page_items);
+    //проверяем текущую страницу на допустимость диапазона(max)
+    $cur_page = $cur_page>$page_count?$page_count:$cur_page;
+    //определяем с какой записи необходимо отображать содержание
+    $offset = ($cur_page-1)*$page_items;
+    $lots = array_slice($lots, $offset, $page_items);
+    
 }
+
+
+
+//отображение шаблона пагинации
+$pagination = include_template('pagination.php', [
+    'cur_page'   => $cur_page,
+    'page_count' => $page_count ]);
 
 
 //вывод отображения страницы
 
 $lots_temp = include_template('lots_by_categories.php', [
-	'categories_temp' => $categories_temp,
-	'lots' => $lots,
-    'category_title' => $category_title
+    'categories_temp' => $categories_temp,
+    'lots'            => $lots,
+    'category_title'  => $category_title,
+    'pagination'      => $pagination
 ]);
 
 
 $layout = include_template('layout.php', $data = [
-    'title'      => $category_title,
+    'title'           => $category_title,
     'categories_temp' => $categories_temp,
-    'is_auth'    =>$is_auth,
-    'main'       => $lots_temp
+    'main'            => $lots_temp
  ]);
 print($layout);
 
