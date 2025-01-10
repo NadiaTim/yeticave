@@ -41,5 +41,6 @@
             </li>
         <?php endforeach; ?>
         </ul>
+    <?= $pagination; ?>
     </section>
 </main>
