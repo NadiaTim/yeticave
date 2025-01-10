@@ -19,7 +19,7 @@ if ($_GET['search']) {
 	if ($get_search) {
 
 		//Определяем количество элементов на странице
-		$page_items = 2;
+		$page_items = 6;
 
 		//определяем текущую страницу
 		$cur_page = $_GET['page']??1;
