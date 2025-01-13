@@ -87,10 +87,18 @@ if (!isset($_SESSION['user'])){
 	$layout = include_template('layout.php', $data = [
 			'title'           => "Регистрация нового аккаунта",
 			'categories_temp' => $categories_temp,
-			'is_auth'         => $is_auth,
 			'main'            => $sign_up
 	 ]);
+	
+	//записываем cookie, содержащую информацию о странице, с которой перешел пользователь
+	//кука храниться 20 минут
+	setcookie("prev_page", $_SERVER['HTTP_REFERER'], time()+1200, "/");
+
 	print($layout);
+
+	
+
+
 } else {
 	header("Location: error.php?error=403");
 }
