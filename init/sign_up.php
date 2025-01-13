@@ -89,7 +89,16 @@ if (!isset($_SESSION['user'])){
 			'categories_temp' => $categories_temp,
 			'main'            => $sign_up
 	 ]);
+	
+	//записываем cookie, содержащую информацию о странице, с которой перешел пользователь
+	//кука храниться 20 минут
+	setcookie("prev_page", $_SERVER['HTTP_REFERER'], time()+1200, "/");
+
 	print($layout);
+
+	
+
+
 } else {
 	header("Location: error.php?error=403");
 }

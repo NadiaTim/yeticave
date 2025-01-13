@@ -9,6 +9,12 @@ require 'data.php';
 require 'connect.php';
 //содержит подключение к БД
 
+//проверяем отсутствие cookie с сылкой перехода
+if (!isset($_COOKIE['prev_page'])) {
+	//записываем cookie, содержащую информацию о странице, с которой перешел пользователь
+	//кука храниться 20 минут
+	setcookie("prev_page", $_SERVER['HTTP_REFERER'], time()+1200, "/");
+}
 
 if ($_SERVER['REQUEST_METHOD']=='POST') {
 
@@ -44,8 +50,11 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 			if (password_verify($user['password'], $user_sql['password'])) {
 				//начинаем сессию, переходим на главную страницу
 				$_SESSION['user'] = $user_sql;
-				//подумать как перенаправить на страницу откуда пользователь пришел
-				header("Location: /index.php");
+				$temp = $_COOKIE['prev_page'];
+				setcookie("prev_page", $_SERVER['HTTP_REFERER'], time()-1200, "/");
+				header("Location:".$temp );
+
+				
 				exit();
 			} else {
 				$errors['password'] = "Введен некорректный пароль";
@@ -74,6 +83,5 @@ $layout = include_template('layout.php', $data = [
 		'main'            => $login
  ]);
 print($layout);
-print_r($errors);
 
 
