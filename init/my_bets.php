@@ -61,7 +61,6 @@ $my_bets = include_template('my_bets.php', [
 $layout = include_template('layout.php', $data = [
         'title'           => "Совершенные ставки",
         'categories_temp' => $categories_temp,
-        'is_auth'         => $is_auth,
         'main'            => $my_bets
  ]);
 print($layout);

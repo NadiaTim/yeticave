@@ -84,7 +84,6 @@ $search_tmp = include_template('search.php', [
 $layout = include_template('layout.php', $data = [
 	'title'           => "Результаты поиска: ".$get_search,
 	'categories_temp' => $categories_temp,
-	'is_auth'         =>$is_auth,
 	'main'            => $search_tmp
  ]);
 print($layout);

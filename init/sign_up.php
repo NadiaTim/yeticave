@@ -87,7 +87,6 @@ if (!isset($_SESSION['user'])){
 	$layout = include_template('layout.php', $data = [
 			'title'           => "Регистрация нового аккаунта",
 			'categories_temp' => $categories_temp,
-			'is_auth'         => $is_auth,
 			'main'            => $sign_up
 	 ]);
 	print($layout);

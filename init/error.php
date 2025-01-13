@@ -56,7 +56,6 @@ $error_temp = include_template('error.php', [
 $layout = include_template('layout.php', $data = [
         'title'      => "Ошибка ". $error['id'],
         'categories_temp' => $categories_temp,
-        'is_auth'    => $is_auth,
         'main'       => $error_temp
  ]);
 print($layout);

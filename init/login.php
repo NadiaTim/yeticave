@@ -71,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 $layout = include_template('layout.php', $data = [
 		'title'           => "Вход в аккаунт",
 		'categories_temp' => $categories_temp,
-		'is_auth'         => $is_auth,
 		'main'            => $login
  ]);
 print($layout);
