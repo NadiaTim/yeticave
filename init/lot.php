@@ -53,26 +53,15 @@ if ($_SERVER['REQUEST_METHOD']=='POST' && isset($lot)) {
         $new_bet['user_id'] = $_SESSION['user']['user_id'];
         $new_bet['lot_id'] = $lot['lot_id'];
 
-        //начинаем транзакцию
-        mysqli_query($con, "START TRANSACTION");
-
         //выполняем первый запрос
-        $sql_1 = "INSERT INTO bets (price, user_id, lot_id) VALUES (?,?,?)";
-        $stmt = db_get_prepare_stmt($con, $sql_1, [$new_bet['cost'],$new_bet['user_id'],$new_bet['lot_id'] ]);
-        $res1 = mysqli_stmt_execute($stmt);
+        $sql = "INSERT INTO bets (price, user_id, lot_id) VALUES (?,?,?)";
+        $stmt = db_get_prepare_stmt($con, $sql, [$new_bet['cost'],$new_bet['user_id'],$new_bet['lot_id'] ]);
+        $res = mysqli_stmt_execute($stmt);
 
-        //выполняем второй запрос
-        $sql_2 = "UPDATE lots SET winner_id=? WHERE lot_id=?";
-        $stmt = db_get_prepare_stmt($con, $sql_2, [$new_bet['user_id'], $new_bet['lot_id']]);
-        $res2 = mysqli_stmt_execute($stmt);
-
-        //завершаем транзакцию
-        if ($res1 && $res2) {
-            mysqli_query($con, "COMMIT");
-        } else {
-            mysqli_query($con, "ROLLBACK");
+        if (!$res) {
             $new_bet['error'] = "Ставка не учтена";
         }
+        
     } else {
         $new_bet['error'] = "Ставка должна быть больше минимальной";
     }
