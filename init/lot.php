@@ -119,7 +119,6 @@ $lot_temp = include_template('lot.php', [
 $layout = include_template('layout.php', $data = [
         'title'           => $lot["name"],
         'categories_temp' => $categories_temp,
-        'is_auth'         => $is_auth,
         'main'            => $lot_temp
  ]);
 print($layout);

@@ -134,7 +134,6 @@ if (isset($_SESSION['user'])){
 	$layout = include_template('layout.php', $data = [
 			'title'           => "Создание лота",
 			'categories_temp' => $categories_temp,
-			'is_auth'         => $is_auth,
 			'main'            => $add_lot
 	 ]);
 	print($layout);
