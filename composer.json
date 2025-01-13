@@ -1,0 +1,14 @@
+{
+    "name": "alex-adm/yeticave",
+    "description": "Webside for buying and selling equipment",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Nadezhda",
+            "email":"timakovanadezda0@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/mailer": "^6.4"
+    }
+}
