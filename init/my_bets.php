@@ -10,12 +10,19 @@ require 'connect.php';
 //содержит подключение к БД
 
 if (isset($_SESSION['user'])) {
-	$sql = "SELECT b.bet_date, b.price, l.name lot_name, l.image, l.winner_id, l.finsh_date, u.contact, c.name cat_name, l.lot_id
+
+	$sql = 	"SELECT b.bet_date, b.price, l.name lot_name, l.image, l.finsh_date, u.contact, c.name cat_name, l.lot_id, win.winner
 		FROM bets b
 		JOIN lots l ON b.lot_id=l.lot_id
 		JOIN users u ON l.creator_id=u.user_id
 		JOIN categories c ON l.category_id=c.category_id
-		WHERE b.user_id = ".$_SESSION['user']['user_id'];
+        left JOIN ( SELECT  bet_id, 1 as winner FROM 
+                (SELECT *, IF(@prev != lot_id, @rn:=1, @rn:=@rn+1) as rank, @prev:=lot_id
+                FROM bets, (SELECT @rn:=0, @prev:=NULL) as vars
+                ORDER BY lot_id, price DESC) t1
+			WHERE rank=1) win ON b.bet_id=win.bet_id
+		WHERE b.user_id = ".$_SESSION['user']['user_id'].
+		" ORDER BY b.bet_date DESC";
 	$res = mysqli_query($con, $sql);
 	$bets = $res?mysqli_fetch_all($res, MYSQLI_ASSOC):header("Location: error.php?error=503");
 	if (isset($bets)) {
@@ -24,7 +31,7 @@ if (isset($_SESSION['user'])) {
 			$n_bets[$key]['time_ago'] = time_ago_text($bet['bet_date']);
 			$rest_time = rest_time($bet['finsh_date']);
 			if ($rest_time[0]==0 && $rest_time[1]==0 && $rest_time[2]==0) {
-				if ($bet['winner_id']==$_SESSION['user']['user_id']) {
+				if ($bet['winner']==1) {
 					$n_bets[$key]['status_id'] = "win";
 					$n_bets[$key]['status'] = "Ставка выйграла";
 				} else {
