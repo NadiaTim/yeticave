@@ -2,12 +2,14 @@
 require 'functions.php';
 //содержит функцию для расчета оставшегося времени лота 
 //и форматирования суммы
-require 'helpers.php'; 
+require_once 'helpers.php'; 
 //содержит функцию для построения страницы из шаблонов
 require 'data.php'; 
 //подключает: список категорий, авторизацию
 require 'connect.php';
 //содержит подключение к БД
+require_once 'winners.php';
+//содержит определение победителя и отправку рассылки о победе
 
 //Определяем количество элементов на странице
 $page_items = 3;
@@ -50,33 +52,6 @@ if ($res) {
 } else {
     header("Location: error.php?error=503");
 }
-
-
-/*
-//получение массива лотов
-if (!$con) {
-    print("Ошибка подключения: ". mysqli_connect_error());
-    $error = mysqli_connect_error();
-} else {
-    $sql = "SELECT l.lot_id, l.name, l.start_price, l.image, COALESCE(p.price,l.start_price) fin_price, c.name category, l.finsh_date finish_date
-            FROM lots l
-            JOIN categories c 
-            ON l.category_id = c.category_id
-            LEFT JOIN ( SELECT lot_id, max(price) price
-                FROM bets
-                GROUP BY lot_id) p 
-            ON l.lot_id = p.lot_id
-            WHERE l.finsh_date>now()
-            ORDER BY l.create_date DESC;";
-    $result = mysqli_query($con, $sql);
-    if ($result) {
-        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } else {
-        $error = mysqli_error($con);
-        print("Ошибка запроса: ".$error);
-    }
-}
-*/
 
 
 
